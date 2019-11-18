@@ -1,0 +1,48 @@
+# Makefile for example utils using foxc.
+
+.PHONY: all clean
+
+TEST1_SRC = hello.c
+TEST2_SRC = test2.c
+
+TEST1_OBJ = $(TEST1_SRC:.c=.o)
+TEST2_OBJ = $(TEST2_SRC:.c=.o)
+TEST1_DEP = $(TEST1_SRC:.c=.d)
+TEST2_DEP = $(TEST2_SRC:.c=.d)
+
+OBJS = $(TEST1_OBJ) $(TEST2_OBJ)
+DEPS = $(TEST1_DEP) $(TEST2_DEP)
+
+EXES = hello test2
+
+include ../config.mak
+
+CC? = gcc
+AR? = ar
+RM = rm -f
+
+CPPFLAGS += -MMD -MP -MT $@
+CFLAGS= -Wall -O2
+INCLUDES = -I../include -I. ${XINCLUDE} ${XFTINCLUDE}
+
+LIBS = -L../src -lfoxc $(XFTLIB) $(XRANDRLIB) $(XLIB) -lm
+
+all: $(EXES)
+
+hello: $(TEST1_OBJ) ../src/libfoxc.a
+	$(CC) -pthread $(CFLAGS) -o hello $(TEST1_OBJ) $(LIBS)
+
+test2: $(TEST2_OBJ) ../src/libfoxc.a
+	$(CC) -pthread $(CFLAGS) -o test2 $(TEST2_OBJ) $(LIBS)
+
+clean:
+	$(RM) $(OBJS)
+	$(RM) $(DEPS)
+	$(RM) $(EXES)
+
+.c.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -MMD -MP -MT $@ -o $@ -c $<
+
+# Include automatically generated dependency files
+-include $(DEPS)
+
