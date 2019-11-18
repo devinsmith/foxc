@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Generated files
+Makefile
+include/config.h
+config.mak
+src/Makefile
