@@ -354,7 +354,8 @@ install:
 # Build the src level Makefile
 echo "Creating src/Makefile"
 cp src/Makefile.in src/Makefile
-
+echo "Creating examples/Makefile"
+cp examples/Makefile.in examples/Makefile
 
 echo
 echo "Configuration:"
