@@ -1,0 +1,55 @@
+# Makefile for Unix version of foxc.
+
+.PHONY: all clean
+
+SRCS  = fxacceltable.c fxapp.c fxascii.c fxbutton.c \
+				fxcomposite.c fxcursor.c \
+				fxdc.c fxfont.c fxframe.c \
+				fxhorizontalframe.c fxpacker.c fxpriv.c \
+				fxkeyboard.c fxkeysym.c \
+				fxlabel.c fxobject.c fxstring.c fxthread.c \
+				fxvisual.c \
+				fxmainwindow.c fxrootwindow.c fxscrollarea.c \
+				fxscrollbar.c fxshell.c fxtext.c fxtextfield.c \
+				fxtopwindow.c fxverticalframe.c fxwindow.c \
+				fxunicode.c fxutils.c fxhash.c
+
+OBJS = $(SRCS:.c=.o)
+DEPS = $(SRCS:.c=.d)
+
+include ../config.mak
+
+CC? = gcc
+AR? = ar
+RM = rm -f
+
+INTERNAL_CFLAGS = -Wall -I../include -I.
+CPPFLAGS += -MMD -MP -MT $@
+CFLAGS= -Wall -O2
+INCLUDES = -I../include -I. ${XINCLUDE} ${XFTINCLUDE}
+
+LIB = libfoxc
+STATIC_LIB = libfoxc.a
+
+all: $(STATIC_LIB)
+
+$(STATIC_LIB): $(OBJS)
+	$(RM) $(STATIC_LIB)
+	$(AR) rc $(STATIC_LIB) $(OBJS)
+	ranlib $(STATIC_LIB)
+
+clean:
+	$(RM) $(OBJS)
+	$(RM) $(DEPS)
+	$(RM) $(STATIC_LIB)
+
+pristine:
+	$(RM) Makefile
+
+
+.c.o:
+	$(CC) $(CFLAGS) $(INCLUDES) -MMD -MP -MT $@ -o $@ -c $<
+
+# Include automatically generated dependency files
+-include $(DEPS)
+
