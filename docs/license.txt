@@ -1,0 +1,2 @@
+This is a fork of the FOX toolkit.  Therefore it is licensed under the LGPL.
+See individual source code files for more information.
